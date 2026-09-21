@@ -1,13 +1,13 @@
 {
     "b1": {
         "slug": "Effective-Python-Brett-Slatkin",
-        "title": "Effective Python",
+        "title": "Effective Python Brett Slatkin",
         "description": "this is development",
         "tags": ["python", "advanced"]
     },
     "b2": {
         "slug": "python-tricks-bookby-dan-bader",
-        "title": "Python Tricks",
+        "title": "python tricks bookby dan bader",
         "description": "this is development",
         "tags": ["python", "tricks"]
     },
