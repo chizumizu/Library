@@ -92,5 +92,119 @@
         "title": "Computer Networks - Handwritten Notes",
         "description": "cn handwritten",
         "tags": ["handwritten-notes", "cn"]
+    },
+    "b16": {
+        "slug": "crud-with-axios",
+        "title": "CRUD with Axios",
+        "description": "this is development",
+        "tags": ["js", "axios", "frontend"]
+    },
+    "b17": {
+        "slug": "data-structure-asmtotic",
+        "title": "Data Structure Asymptotic",
+        "description": "this is development",
+        "tags": ["dsa", "data-structures"]
+    },
+    "b18": {
+        "slug": "dbms-lab-manual",
+        "title": "DBMS Lab Manual",
+        "description": "dbms lab manual",
+        "tags": ["dbms", "lab-manual"]
+    },
+    "b19": {
+        "slug": "frontend-interview-guide",
+        "title": "Frontend Interview Guide",
+        "description": "frontend interview preparation guide",
+        "tags": ["frontend", "interview", "js"]
+    },
+    "b20": {
+        "slug": "how-to-email",
+        "title": "How to Email",
+        "description": "email writing guide",
+        "tags": ["guide", "email"]
+    },
+    "b21": {
+        "slug": "java-jdbc-notes",
+        "title": "Java JDBC Notes",
+        "description": "java jdbc notes",
+        "tags": ["java", "jdbc", "notes"]
+    },
+    "b22": {
+        "slug": "java-jsp-notes-english",
+        "title": "Java JSP Notes English",
+        "description": "java jsp notes in english",
+        "tags": ["java", "jsp", "notes"]
+    },
+    "b23": {
+        "slug": "master-program-in-full-stack-python",
+        "title": "Master Program in Full Stack Python",
+        "description": "full stack python program",
+        "tags": ["python", "fullstack", "beginner"]
+    },
+    "b24": {
+        "slug": "operating-system-l1",
+        "title": "Operating System L1",
+        "description": "operating system level 1 notes",
+        "tags": ["os", "notes"]
+    },
+    "b25": {
+        "slug": "panda",
+        "title": "Panda",
+        "description": "this is development",
+        "tags": ["python", "pandas"]
+    },
+    "b26": {
+        "slug": "python-all-in-one",
+        "title": "Python All in One",
+        "description": "python all in one reference",
+        "tags": ["python", "beginner", "reference"]
+    },
+    "b27": {
+        "slug": "python-cheatsheet",
+        "title": "Python Cheatsheet",
+        "description": "python cheatsheet",
+        "tags": ["python", "reference", "cheatsheet"]
+    },
+    "b28": {
+        "slug": "the-pragmatic-programmer",
+        "title": "The Pragmatic Programmer",
+        "description": "classic software development book",
+        "tags": ["books", "advanced", "practices"]
+    },
+    "b29": {
+        "slug": "vishwas-resume",
+        "title": "Vishwas Resume",
+        "description": "resume",
+        "tags": ["resume"]
+    },
+    "b30": {
+        "slug": "api",
+        "title": "API",
+        "description": "api development guide",
+        "tags": ["api", "backend", "guide"]
+    },
+    "b31": {
+        "slug": "djangobookwzy482",
+        "title": "Django Book",
+        "description": "django development book",
+        "tags": ["python", "django", "backend"]
+    },
+    "b32": {
+        "slug": "dsa-handwritten-notes",
+        "title": "DSA Handwritten Notes",
+        "description": "handwritten notes for quick revision",
+        "tags": ["handwritten-notes", "dsa", "interview"]
+    },
+    "b33": {
+        "slug": "pro-mern-stack-development-express",
+        "title": "Pro MERN Stack Development with Express",
+        "description": "mern stack development book",
+        "tags": ["js", "react", "node"]
+    },
+    "b34": {
+        "slug": "springboot",
+        "title": "Spring Boot",
+        "description": "spring boot development guide",
+        "tags": ["java", "springboot", "backend"]
     }
 }
