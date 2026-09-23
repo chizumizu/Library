@@ -48,10 +48,11 @@
         "tags": ["python", "dsa", "beginner"]
     },
     "b9": {
-        "slug": "python-all-in-one",
-        "title": "Python All in One",
+        "slug": "learning-python",
+        "title": "Learning Python",
         "description": "this is development",
-        "tags": ["python", "beginner"]
+        "tags": ["python", "beginner"],
+        "link":"https://cfm.ehu.es/ricardo/docs/python/Learning_Python.pdf"
     },
     "b10": {
         "slug": "handwritten-dbms-notes",
@@ -71,7 +72,7 @@
         "title": "Introduction to Machine Learning",
         "description": "ml basics with python",
         "tags": ["ml", "ai", "python"],
-        "link": "https://example.com/intro-to-ml.pdf"
+        "link": "https://www.nrigroupindia.com/e-book/Introduction%20to%20Machine%20Learning%20with%20Python%20(%20PDFDrive.com%20)-min.pdf"
     },
     "b13": {
         "slug": "java-handbook",
@@ -81,9 +82,10 @@
     },
     "b14": {
         "slug": "rust-programming",
-        "title": "Rust Programming",
+        "title": "Begnning Rust Programming",
         "description": "systems programming with rust",
-        "tags": ["rust", "system"]
+        "tags": ["rust", "system"],
+        "link":"https://ebooks.karbust.me/Technology/Beginning%20Rust%20Programming%20-%20Ric%20Messier%20-%20Wiley%20(2021).pdf"
     },
     "b15": {
         "slug": "computer-networks-notes",
