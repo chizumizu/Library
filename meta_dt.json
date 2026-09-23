@@ -54,19 +54,6 @@
         "tags": ["python", "beginner"],
         "link":"https://cfm.ehu.es/ricardo/docs/python/Learning_Python.pdf"
     },
-    "b10": {
-        "slug": "handwritten-dbms-notes",
-        "title": "Handwritten DBMS Notes",
-        "description": "handwritten notes for quick revision",
-        "tags": ["handwritten-notes", "dbms"],
-        "link": "https://example.com/handwritten-dbms-notes.pdf"
-    },
-    "b11": {
-        "slug": "system-design-interview",
-        "title": "System Design Interview",
-        "description": "system design handbook",
-        "tags": ["system-design", "interview"]
-    },
     "b12": {
         "slug": "intro-to-ml",
         "title": "Introduction to Machine Learning",
@@ -74,24 +61,12 @@
         "tags": ["ml", "ai", "python"],
         "link": "https://www.nrigroupindia.com/e-book/Introduction%20to%20Machine%20Learning%20with%20Python%20(%20PDFDrive.com%20)-min.pdf"
     },
-    "b13": {
-        "slug": "java-handbook",
-        "title": "Java Handbook",
-        "description": "core java and oop",
-        "tags": ["java", "oop"]
-    },
     "b14": {
         "slug": "rust-programming",
         "title": "Begnning Rust Programming",
         "description": "systems programming with rust",
         "tags": ["rust", "system"],
         "link":"https://ebooks.karbust.me/Technology/Beginning%20Rust%20Programming%20-%20Ric%20Messier%20-%20Wiley%20(2021).pdf"
-    },
-    "b15": {
-        "slug": "computer-networks-notes",
-        "title": "Computer Networks - Handwritten Notes",
-        "description": "cn handwritten",
-        "tags": ["handwritten-notes", "cn"]
     },
     "b16": {
         "slug": "crud-with-axios",

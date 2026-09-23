@@ -21,15 +21,18 @@
             />
         </div>
 
-        <!-- Linear tab bar containing category tags -->
-        <nav class="tab-bar">
-            <button class="tab-btn active" data-tag="all">all</button>
-            <% if (tags && tags.length) { %>
-                <% tags.forEach(function(tag) { %>
-                    <button class="tab-btn" data-tag="<%= tag.toLowerCase() %>"><%= tag %></button>
-                <% }); %>
-            <% } %>
-        </nav>
+        <!-- Linear tab bar containing category tags (collapsible with ⋯ on mobile) -->
+        <div class="tab-bar-wrap">
+            <nav class="tab-bar" id="tabBar">
+                <button class="tab-btn active" data-tag="all">all</button>
+                <% if (tags && tags.length) { %>
+                    <% tags.forEach(function(tag) { %>
+                        <button class="tab-btn" data-tag="<%= tag.toLowerCase() %>"><%= tag %></button>
+                    <% }); %>
+                <% } %>
+            </nav>
+            <button type="button" class="tab-expand-btn" id="tabExpand" aria-controls="tabBar" aria-expanded="false" hidden>⋯</button>
+        </div>
 
         <!-- Book display list table - no separate tag column, badges are on right side of name -->
         <table class="book-table">
@@ -46,8 +49,9 @@
                         const normalizedTags = tags.map(t => String(t).toLowerCase().trim()).filter(Boolean);
                         const tagsStr = normalizedTags.join(' ');
                         const hasLink = book.link && String(book.link).trim().length > 0;
-                        const previewHref = hasLink ? String(book.link).trim() : '/preview/' + encodeURIComponent(book.slug);
-                        const downloadHref = hasLink ? String(book.link).trim() : '/download/' + encodeURIComponent(book.slug);
+                        const externalHref = hasLink ? String(book.link).trim() : '';
+                        const previewHref = '/preview/' + encodeURIComponent(book.slug);
+                        const downloadHref = '/download/' + encodeURIComponent(book.slug);
                         const displayName = book.title || book.slug;
                     %>
                         <tr 
@@ -62,21 +66,36 @@
                                 <div class="book-cell">
                                     <div class="book-main">
                                         <div class="book-title-row">
-                                            <a 
-                                                href="<%= previewHref %>" 
-                                                class="book-link" 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
-                                                title="Preview <%= displayName %> in new tab"
-                                            >
-                                                <%= displayName %><span class="<%= hasLink ? 'external-icon' : 'preview-icon' %>"> ↗</span>
-                                            </a>
-                                            <% if (!hasLink) { %>
+                                            <% if (hasLink) { %>
+                                                <!-- Externally linked books: no preview, download straight from source -->
+                                                <span class="book-title-plain"><%= displayName %></span>
+                                                <a 
+                                                    href="<%= externalHref %>" 
+                                                    class="download-btn" 
+                                                    download
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    title="Download <%= displayName %> from source"
+                                                    aria-label="Download <%= displayName %>"
+                                                >
+                                                    ⬇
+                                                </a>
+                                            <% } else { %>
+                                                <a 
+                                                    href="<%= previewHref %>" 
+                                                    class="book-link" 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    title="Preview <%= displayName %> in new tab"
+                                                >
+                                                    <%= displayName %><span class="preview-icon"> ↗</span>
+                                                </a>
                                                 <a 
                                                     href="<%= downloadHref %>" 
                                                     class="download-btn" 
                                                     download="<%= book.slug %>.pdf" 
                                                     title="Download <%= book.slug %>.pdf"
+                                                    aria-label="Download <%= book.slug %>.pdf"
                                                 >
                                                     ⬇
                                                 </a>
@@ -172,6 +191,41 @@
                 filterList();
             });
         });
+
+        // Collapsible tab bar on mobile: show ⋯ when categories overflow
+        const tabBar = document.getElementById('tabBar');
+        const tabExpand = document.getElementById('tabExpand');
+        const mobileQuery = window.matchMedia('(max-width: 560px)');
+
+        function syncTabExpand() {
+            if (!tabBar || !tabExpand) return;
+            if (!mobileQuery.matches) {
+                tabBar.classList.remove('is-expanded');
+                tabExpand.hidden = true;
+                tabExpand.textContent = '⋯';
+                tabExpand.setAttribute('aria-expanded', 'false');
+                return;
+            }
+            const expanded = tabBar.classList.contains('is-expanded');
+            if (expanded) {
+                tabExpand.hidden = false;
+                tabExpand.textContent = '⌃';
+                tabExpand.setAttribute('aria-expanded', 'true');
+            } else {
+                tabExpand.hidden = tabBar.scrollHeight <= tabBar.clientHeight + 2;
+                tabExpand.textContent = '⋯';
+                tabExpand.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+        if (tabExpand) {
+            tabExpand.addEventListener('click', function() {
+                tabBar.classList.toggle('is-expanded');
+                syncTabExpand();
+            });
+        }
+        window.addEventListener('resize', syncTabExpand);
+        syncTabExpand();
     </script>
 </body>
 </html>

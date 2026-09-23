@@ -40,13 +40,16 @@ h1 { font-size: 26px; font-weight: 700; margin-top: 0; margin-bottom: 24px; }
 .search-input:focus { outline: 1px solid #000000; }
 
 /* Tag tabs */
+.tab-bar-wrap {
+    position: relative;
+    border-bottom: 1px solid #000000;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
 .tab-bar {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    border-bottom: 1px solid #000000;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
 }
 .tab-btn {
     background: transparent;
@@ -109,8 +112,15 @@ h1 { font-size: 26px; font-weight: 700; margin-top: 0; margin-bottom: 24px; }
     line-height: 1.4;
 }
 .book-link:hover { color: #0000ee; text-decoration: underline; }
-.external-icon { font-size: 11px; margin-left: 4px; }
 .preview-icon { font-size: 11px; margin-left: 4px; }
+
+/* Plain title for externally linked books (no preview) */
+.book-title-plain {
+    color: #000000;
+    line-height: 1.4;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
 
 /* Title row: title link + download button */
 .book-title-row {
@@ -119,16 +129,34 @@ h1 { font-size: 26px; font-weight: 700; margin-top: 0; margin-bottom: 24px; }
     gap: 8px;
 }
 .download-btn {
-    color: #000000;
-    text-decoration: none;
-    font-size: 13px;
-    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
     border: 1px solid #000000;
-    padding: 3px 8px;
-    flex-shrink: 0;
+    border-radius: 6px;
     background: #ffffff;
+    color: #000000;
+    font-size: 12px;
+    line-height: 1;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
-.download-btn:hover { background: #000000; color: #ffffff; }
+.download-btn:hover,
+.download-btn:focus-visible {
+    background: #000000;
+    color: #ffffff;
+    outline: none;
+}
+
+/* Mobile: collapse tab categories behind ⋯ expand button */
+.tab-expand-btn {
+    display: none;
+}
+.tab-expand-btn[hidden] { display: none !important; }
 
 /* Badges - colored capsules on right side */
 .badge-list {
@@ -197,4 +225,49 @@ h1 { font-size: 26px; font-weight: 700; margin-top: 0; margin-bottom: 24px; }
 @media (max-width: 560px) {
     .book-cell { flex-direction: column; align-items: flex-start; }
     .badge-list { justify-content: flex-start; max-width: 100%; }
+
+    /* Collapse tab categories to ~2 rows with fade + ⋯ expand button */
+    .tab-bar-wrap { position: relative; }
+    .tab-bar:not(.is-expanded) {
+        max-height: 74px;
+        overflow: hidden;
+    }
+    .tab-bar:not(.is-expanded)::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 1px;
+        height: 36px;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff 75%);
+        pointer-events: none;
+        z-index: 1;
+    }
+    .tab-expand-btn:not([hidden]) {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        right: 0;
+        bottom: 14px;
+        min-width: 34px;
+        height: 28px;
+        padding: 0 10px;
+        border: 1px solid #000000;
+        border-radius: 999px;
+        background: #ffffff;
+        color: #000000;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1;
+        cursor: pointer;
+        z-index: 2;
+        font-family: inherit;
+    }
+    .tab-expand-btn:not([hidden]):hover,
+    .tab-expand-btn:not([hidden]):focus-visible {
+        background: #000000;
+        color: #ffffff;
+        outline: none;
+    }
 }
