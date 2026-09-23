@@ -54,6 +54,12 @@
         "tags": ["python", "beginner"],
         "link":"https://cfm.ehu.es/ricardo/docs/python/Learning_Python.pdf"
     },
+    "b10":{
+        "slug":"top-leetcode-questions-with-solutions",
+        "title":"Top Leetcode Questions With Solutions",
+        "description": "leetcode question and solutoon",
+        "tags":["dsa","system"]
+    },
     "b12": {
         "slug": "intro-to-ml",
         "title": "Introduction to Machine Learning",
