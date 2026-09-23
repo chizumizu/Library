@@ -110,6 +110,25 @@ h1 { font-size: 26px; font-weight: 700; margin-top: 0; margin-bottom: 24px; }
 }
 .book-link:hover { color: #0000ee; text-decoration: underline; }
 .external-icon { font-size: 11px; margin-left: 4px; }
+.preview-icon { font-size: 11px; margin-left: 4px; }
+
+/* Title row: title link + download button */
+.book-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.download-btn {
+    color: #000000;
+    text-decoration: none;
+    font-size: 13px;
+    line-height: 1;
+    border: 1px solid #000000;
+    padding: 3px 8px;
+    flex-shrink: 0;
+    background: #ffffff;
+}
+.download-btn:hover { background: #000000; color: #ffffff; }
 
 /* Badges - colored capsules on right side */
 .badge-list {

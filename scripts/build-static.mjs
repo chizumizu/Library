@@ -51,12 +51,12 @@ async function build() {
   const templatePath = path.join(rootDir, 'views', 'index.ejs');
   const html = await ejs.renderFile(templatePath, { books: bookList, tags: allTags });
 
-  // Adjust absolute download links for GitHub Pages (relative) if needed
-  // Keep as-is for custom domain; for project pages, relative links work better.
-  // We copy PDFs to dist/uploads and keep href as uploads/<slug>.pdf for static compatibility
-  // but also keep /download/ route fallback via 404.html if needed.
-  // For now, replace /download/ with uploads/ + .pdf for static hosting
-  const staticHtml = html.replaceAll('/download/', 'uploads/').replaceAll('.pdf"', '.pdf"');
+  // Rewrite Express routes to static uploads paths for GitHub Pages.
+  // Both /preview/ (inline view) and /download/ (attachment) resolve to the
+  // same static file — GitHub Pages serves .pdf with inline disposition.
+  const staticHtml = html
+    .replaceAll('/preview/', 'uploads/')
+    .replaceAll('/download/', 'uploads/');
 
   // Ensure links end with .pdf for static files
   // The EJS generates href="/download/<slug>" and download="<slug>.pdf"

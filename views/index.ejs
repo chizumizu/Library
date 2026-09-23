@@ -46,7 +46,8 @@
                         const normalizedTags = tags.map(t => String(t).toLowerCase().trim()).filter(Boolean);
                         const tagsStr = normalizedTags.join(' ');
                         const hasLink = book.link && String(book.link).trim().length > 0;
-                        const href = hasLink ? String(book.link).trim() : '/download/' + encodeURIComponent(book.slug);
+                        const previewHref = hasLink ? String(book.link).trim() : '/preview/' + encodeURIComponent(book.slug);
+                        const downloadHref = hasLink ? String(book.link).trim() : '/download/' + encodeURIComponent(book.slug);
                         const displayName = book.title || book.slug;
                     %>
                         <tr 
@@ -60,14 +61,27 @@
                             <td class="col-name">
                                 <div class="book-cell">
                                     <div class="book-main">
-                                        <a 
-                                            href="<%= href %>" 
-                                            class="book-link" 
-                                            <% if (hasLink) { %> target="_blank" rel="noopener noreferrer" <% } else { %> download="<%= book.slug %>.pdf" <% } %>
-                                            title="<%= hasLink ? 'Open external link' : 'Download ' + book.slug + '.pdf' %>"
-                                        >
-                                            <%= displayName %><% if (hasLink) { %><span class="external-icon"> ↗</span><% } %>
-                                        </a>
+                                        <div class="book-title-row">
+                                            <a 
+                                                href="<%= previewHref %>" 
+                                                class="book-link" 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                title="Preview <%= displayName %> in new tab"
+                                            >
+                                                <%= displayName %><span class="<%= hasLink ? 'external-icon' : 'preview-icon' %>"> ↗</span>
+                                            </a>
+                                            <% if (!hasLink) { %>
+                                                <a 
+                                                    href="<%= downloadHref %>" 
+                                                    class="download-btn" 
+                                                    download="<%= book.slug %>.pdf" 
+                                                    title="Download <%= book.slug %>.pdf"
+                                                >
+                                                    ⬇
+                                                </a>
+                                            <% } %>
+                                        </div>
                                     </div>
                                     <div class="badge-list">
                                         <% normalizedTags.forEach(function(t) { %>
