@@ -58,6 +58,44 @@ app.get('/download/:slug', async (req, res) => {
     }
 });
 
+// Secure PDF preview endpoint (renders inline in browser tab)
+app.get('/preview/:slug', async (req, res) => {
+    try {
+        const slug = req.params.slug;
+        if (!slug || typeof slug !== 'string') {
+            return res.status(400).send('Invalid file identifier');
+        }
+
+        const safeSlug = path.basename(slug.trim());
+        if (safeSlug !== slug || slug.includes('..') || slug.includes('/') || slug.includes('\\')) {
+            return res.status(400).send('Invalid file path');
+        }
+
+        const uploadsDir = path.resolve(__dirname, 'uploads');
+        const files = await readdir(uploadsDir);
+
+        const targetPdf = `${safeSlug}.pdf`.toLowerCase();
+        const matchedFile = files.find(f => f.toLowerCase() === targetPdf && f.toLowerCase().endsWith('.pdf'));
+
+        if (!matchedFile) {
+            return res.status(404).send('PDF file not found in library');
+        }
+
+        const resolvedPath = path.resolve(path.join(uploadsDir, matchedFile));
+        if (!resolvedPath.startsWith(uploadsDir)) {
+            return res.status(403).send('Access denied');
+        }
+
+        // Set inline disposition and application/pdf MIME type
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename="${matchedFile}"`);
+        res.sendFile(resolvedPath);
+    } catch (error) {
+        console.error('Preview error:', error);
+        res.status(500).send('Server Error during preview');
+    }
+});
+
 function normalizeTags(book) {
     let tags = [];
     if (Array.isArray(book.tags)) tags = book.tags;
