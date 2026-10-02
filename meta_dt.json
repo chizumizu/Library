@@ -1,191 +1,311 @@
 {
-    "b1": {
-        "slug": "Effective-Python-Brett-Slatkin",
-        "title": "Effective Python Brett Slatkin",
-        "description": "this is development",
-        "tags": ["python", "advanced"]
-    },
-    "b2": {
-        "slug": "python-tricks-bookby-dan-bader",
-        "title": "python tricks bookby dan bader",
-        "description": "this is development",
-        "tags": ["python", "tricks"]
-    },
-    "b3": {
-        "slug": "ReactJS",
-        "title": "ReactJS",
-        "description": "this is development",
-        "tags": ["js", "react", "frontend"]
-    },
-    "b4": {
-        "slug": "descreat_math",
-        "title": "Discrete Mathematics",
-        "description": "this is development",
-        "tags": ["math", "dsa"]
-    },
-    "b5": {
-        "slug": "dsa_roadmap",
-        "title": "DSA Roadmap",
-        "description": "this is development",
-        "tags": ["dsa", "roadmap", "interview"]
-    },
-    "b6": {
-        "slug": "oops",
-        "title": "OOPs",
-        "description": "this is development",
-        "tags": ["oop", "python"]
-    },
-    "b7": {
-        "slug": "progit",
-        "title": "Pro Git",
-        "description": "this is development",
-        "tags": ["git", "devops"]
-    },
-    "b8": {
-        "slug": "programming-data-structures-and-algorithms-using-python",
-        "title": "Programming Data Structures and Algorithms using Python",
-        "description": "this is development",
-        "tags": ["python", "dsa", "beginner"]
-    },
-    "b9": {
-        "slug": "learning-python",
-        "title": "Learning Python",
-        "description": "this is development",
-        "tags": ["python", "beginner"],
-        "link":"https://cfm.ehu.es/ricardo/docs/python/Learning_Python.pdf"
-    },
-    "b10":{
-        "slug":"top-leetcode-questions-with-solutions",
-        "title":"Top Leetcode Questions With Solutions",
-        "description": "leetcode question and solutoon",
-        "tags":["dsa","system"]
-    },
-    "b12": {
-        "slug": "intro-to-ml",
-        "title": "Introduction to Machine Learning",
-        "description": "ml basics with python",
-        "tags": ["ml", "ai", "python"],
-        "link": "https://www.nrigroupindia.com/e-book/Introduction%20to%20Machine%20Learning%20with%20Python%20(%20PDFDrive.com%20)-min.pdf"
-    },
-    "b14": {
-        "slug": "rust-programming",
-        "title": "Begnning Rust Programming",
-        "description": "systems programming with rust",
-        "tags": ["rust", "system"],
-        "link":"https://ebooks.karbust.me/Technology/Beginning%20Rust%20Programming%20-%20Ric%20Messier%20-%20Wiley%20(2021).pdf"
-    },
-    "b16": {
-        "slug": "crud-with-axios",
-        "title": "CRUD with Axios",
-        "description": "this is development",
-        "tags": ["js", "axios", "frontend"]
-    },
-    "b17": {
-        "slug": "data-structure-asmtotic",
-        "title": "Data Structure Asymptotic",
-        "description": "this is development",
-        "tags": ["dsa", "data-structures"]
-    },
-    "b18": {
-        "slug": "dbms-lab-manual",
-        "title": "DBMS Lab Manual",
-        "description": "dbms lab manual",
-        "tags": ["dbms", "lab-manual"]
-    },
-    "b19": {
-        "slug": "frontend-interview-guide",
-        "title": "Frontend Interview Guide",
-        "description": "frontend interview preparation guide",
-        "tags": ["frontend", "interview", "js"]
-    },
-    "b20": {
-        "slug": "how-to-email",
-        "title": "How to Email",
-        "description": "email writing guide",
-        "tags": ["guide", "email"]
-    },
-    "b21": {
-        "slug": "java-jdbc-notes",
-        "title": "Java JDBC Notes",
-        "description": "java jdbc notes",
-        "tags": ["java", "jdbc", "notes"]
-    },
-    "b22": {
-        "slug": "java-jsp-notes-english",
-        "title": "Java JSP Notes English",
-        "description": "java jsp notes in english",
-        "tags": ["java", "jsp", "notes"]
-    },
-    "b23": {
-        "slug": "master-program-in-full-stack-python",
-        "title": "Master Program in Full Stack Python",
-        "description": "full stack python program",
-        "tags": ["python", "fullstack", "beginner"]
-    },
-    "b24": {
-        "slug": "operating-system-l1",
-        "title": "Operating System L1",
-        "description": "operating system level 1 notes",
-        "tags": ["os", "notes"]
-    },
-    "b25": {
-        "slug": "panda",
-        "title": "Panda",
-        "description": "this is development",
-        "tags": ["python", "pandas"]
-    },
-    "b26": {
-        "slug": "python-all-in-one",
-        "title": "Python All in One",
-        "description": "python all in one reference",
-        "tags": ["python", "beginner", "reference"]
-    },
-    "b27": {
-        "slug": "python-cheatsheet",
-        "title": "Python Cheatsheet",
-        "description": "python cheatsheet",
-        "tags": ["python", "reference", "cheatsheet"]
-    },
-    "b28": {
-        "slug": "the-pragmatic-programmer",
-        "title": "The Pragmatic Programmer",
-        "description": "classic software development book",
-        "tags": ["books", "advanced", "practices"]
-    },
-    "b29": {
-        "slug": "vishwas-resume",
-        "title": "Vishwas Resume",
-        "description": "resume",
-        "tags": ["resume"]
-    },
-    "b30": {
-        "slug": "api",
-        "title": "API",
-        "description": "api development guide",
-        "tags": ["api", "backend", "guide"]
-    },
-    "b31": {
-        "slug": "djangobookwzy482",
-        "title": "Django Book",
-        "description": "django development book",
-        "tags": ["python", "django", "backend"]
-    },
-    "b32": {
-        "slug": "dsa-handwritten-notes",
-        "title": "DSA Handwritten Notes",
-        "description": "handwritten notes for quick revision",
-        "tags": ["handwritten-notes", "dsa", "interview"]
-    },
-    "b33": {
-        "slug": "pro-mern-stack-development-express",
-        "title": "Pro MERN Stack Development with Express",
-        "description": "mern stack development book",
-        "tags": ["js", "react", "node"]
-    },
-    "b34": {
-        "slug": "springboot",
-        "title": "Spring Boot",
-        "description": "spring boot development guide",
-        "tags": ["java", "springboot", "backend"]
-    }
+  "b1": {
+    "slug": "Effective-Python-Brett-Slatkin",
+    "title": "Effective Python Brett Slatkin",
+    "description": "this is development",
+    "tags": ["python", "advanced"]
+  },
+  "b2": {
+    "slug": "python-tricks-bookby-dan-bader",
+    "title": "python tricks bookby dan bader",
+    "description": "this is development",
+    "tags": ["python", "tricks"]
+  },
+  "b3": {
+    "slug": "ReactJS",
+    "title": "ReactJS",
+    "description": "this is development",
+    "tags": ["js", "react", "frontend"]
+  },
+  "b4": {
+    "slug": "descreat_math",
+    "title": "Discrete Mathematics",
+    "description": "this is development",
+    "tags": ["math", "dsa"]
+  },
+  "b5": {
+    "slug": "dsa_roadmap",
+    "title": "DSA Roadmap",
+    "description": "this is development",
+    "tags": ["dsa", "roadmap", "interview"]
+  },
+  "b6": {
+    "slug": "oops",
+    "title": "OOPs",
+    "description": "this is development",
+    "tags": ["oop", "python"]
+  },
+  "b7": {
+    "slug": "progit",
+    "title": "Pro Git",
+    "description": "this is development",
+    "tags": ["git", "devops"]
+  },
+  "b8": {
+    "slug": "programming-data-structures-and-algorithms-using-python",
+    "title": "Programming Data Structures and Algorithms using Python",
+    "description": "this is development",
+    "tags": ["python", "dsa", "beginner"]
+  },
+  "b9": {
+    "slug": "learning-python",
+    "title": "Learning Python",
+    "description": "this is development",
+    "tags": ["python", "beginner"],
+    "link": "https://cfm.ehu.es/ricardo/docs/python/Learning_Python.pdf"
+  },
+  "b10": {
+    "slug": "top-leetcode-questions-with-solutions",
+    "title": "Top Leetcode Questions With Solutions",
+    "description": "leetcode question and solutoon",
+    "tags": ["dsa", "system"]
+  },
+  "b12": {
+    "slug": "intro-to-ml",
+    "title": "Introduction to Machine Learning",
+    "description": "ml basics with python",
+    "tags": ["ml", "ai", "python"],
+    "link": "https://www.nrigroupindia.com/e-book/Introduction%20to%20Machine%20Learning%20with%20Python%20(%20PDFDrive.com%20)-min.pdf"
+  },
+  "b14": {
+    "slug": "rust-programming",
+    "title": "Begnning Rust Programming",
+    "description": "systems programming with rust",
+    "tags": ["rust", "system"],
+    "link": "https://ebooks.karbust.me/Technology/Beginning%20Rust%20Programming%20-%20Ric%20Messier%20-%20Wiley%20(2021).pdf"
+  },
+  "b16": {
+    "slug": "crud-with-axios",
+    "title": "CRUD with Axios",
+    "description": "this is development",
+    "tags": ["js", "axios", "frontend"]
+  },
+  "b17": {
+    "slug": "data-structure-asmtotic",
+    "title": "Data Structure Asymptotic",
+    "description": "this is development",
+    "tags": ["dsa", "data-structures"]
+  },
+  "b18": {
+    "slug": "dbms-lab-manual",
+    "title": "DBMS Lab Manual",
+    "description": "dbms lab manual",
+    "tags": ["dbms", "lab-manual"]
+  },
+  "b19": {
+    "slug": "frontend-interview-guide",
+    "title": "Frontend Interview Guide",
+    "description": "frontend interview preparation guide",
+    "tags": ["frontend", "interview", "js"]
+  },
+  "b20": {
+    "slug": "how-to-email",
+    "title": "How to Email",
+    "description": "email writing guide",
+    "tags": ["guide", "email"]
+  },
+  "b21": {
+    "slug": "java-jdbc-notes",
+    "title": "Java JDBC Notes",
+    "description": "java jdbc notes",
+    "tags": ["java", "jdbc", "notes"]
+  },
+  "b22": {
+    "slug": "java-jsp-notes-english",
+    "title": "Java JSP Notes English",
+    "description": "java jsp notes in english",
+    "tags": ["java", "jsp", "notes"]
+  },
+  "b23": {
+    "slug": "master-program-in-full-stack-python",
+    "title": "Master Program in Full Stack Python",
+    "description": "full stack python program",
+    "tags": ["python", "fullstack", "beginner"]
+  },
+  "b24": {
+    "slug": "operating-system-l1",
+    "title": "Operating System L1",
+    "description": "operating system level 1 notes",
+    "tags": ["os", "notes"]
+  },
+  "b25": {
+    "slug": "panda",
+    "title": "Panda",
+    "description": "this is development",
+    "tags": ["python", "pandas"]
+  },
+  "b26": {
+    "slug": "python-all-in-one",
+    "title": "Python All in One",
+    "description": "python all in one reference",
+    "tags": ["python", "beginner", "reference"]
+  },
+  "b27": {
+    "slug": "python-cheatsheet",
+    "title": "Python Cheatsheet",
+    "description": "python cheatsheet",
+    "tags": ["python", "reference", "cheatsheet"]
+  },
+  "b28": {
+    "slug": "the-pragmatic-programmer",
+    "title": "The Pragmatic Programmer",
+    "description": "classic software development book",
+    "tags": ["books", "advanced", "practices"]
+  },
+  "b29": {
+    "slug": "vishwas-resume",
+    "title": "Vishwas Resume",
+    "description": "resume",
+    "tags": ["resume"]
+  },
+  "b30": {
+    "slug": "api",
+    "title": "API",
+    "description": "api development guide",
+    "tags": ["api", "backend", "guide"]
+  },
+  "b31": {
+    "slug": "djangobookwzy482",
+    "title": "Django Book",
+    "description": "django development book",
+    "tags": ["python", "django", "backend"]
+  },
+  "b32": {
+    "slug": "dsa-handwritten-notes",
+    "title": "DSA Handwritten Notes",
+    "description": "handwritten notes for quick revision",
+    "tags": ["handwritten-notes", "dsa", "interview"]
+  },
+  "b33": {
+    "slug": "pro-mern-stack-development-express",
+    "title": "Pro MERN Stack Development with Express",
+    "description": "mern stack development book",
+    "tags": ["js", "react", "node"]
+  },
+  "b34": {
+    "slug": "springboot",
+    "title": "Spring Boot",
+    "description": "spring boot development guide",
+    "tags": ["java", "springboot", "backend"]
+  },
+  "b35": {
+    "slug": "CSS_InterviewBit",
+    "title": "CSS InterviewBit",
+    "description": "CSS Interview questions downloaded from InterviewBit",
+    "tags": ["Interview", "CSS"]
+  },
+  "b36": {
+    "slug": "C_Interview",
+    "title": "C Interview",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "C"]
+  },
+  "b37": {
+    "slug": "C_Major_Interview",
+    "title": "C Major Interview",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "C"]
+  },
+  "b38": {
+    "slug": "Cpp_Interview",
+    "title": "Cpp Interview",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "Cpp", "C"]
+  },
+  "b39": {
+    "slug": "DBMS_Interview",
+    "title": "DBMS Interview",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "DBMS"]
+  },
+  "b40": {
+    "slug": "DSA_C_Program_Questions",
+    "title": "DSA C Program Questions",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "DSA", "C"]
+  },
+  "b41": {
+    "slug": "DSA_interviewBit",
+    "title": "DSA interviewBit",
+    "description": "DSA Interview questions downloaded from InterviewBit",
+    "tags": ["Interview", "DSA"]
+  },
+  "b42": {
+    "slug": "Data_Structures_Interview_Questions_1",
+    "title": "Data Structures Interview Questions 1",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "DSA"]
+  },
+  "b43": {
+    "slug": "Data_Structures_Interview_Questions_2",
+    "title": "Data Structures Interview Questions 2",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "DSA"]
+  },
+  "b44": {
+    "slug": "HTML_InterviewBit",
+    "title": "HTML InterviewBit",
+    "description": "HTML Interview questions downloaded from InterviewBit",
+    "tags": ["Interview", "HTML"]
+  },
+  "b45": {
+    "slug": "Mutual_Funds",
+    "title": "Mutual Funds",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "MutualFunds"]
+  },
+  "b46": {
+    "slug": "OOPS_InterviewBit",
+    "title": "OOPS InterviewBit",
+    "description": "OOPS Interview questions downloaded from InterviewBit",
+    "tags": ["Interview", "OOP"]
+  },
+  "b47": {
+    "slug": "OS-Interview",
+    "title": "OS Interview",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "OS"]
+  },
+  "b48": {
+    "slug": "PROJECT_MANAGEMENT_SESSION-SDLC_TESTING_INTRODUCTION",
+    "title": "PROJECT MANAGEMENT SESSION SDLC TESTING INTRODUCTION",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "SDLC", "ProjectManagement"]
+  },
+  "b49": {
+    "slug": "Project_Flow_Of_IT_Industry-Waterfall_Model",
+    "title": "Project Flow Of IT Industry Waterfall Model",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "SDLC"]
+  },
+  "b50": {
+    "slug": "React_Interview_javatpoint",
+    "title": "React Interview javatpoint",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "React"]
+  },
+  "b51": {
+    "slug": "SQL_InterviewBit",
+    "title": "SQL InterviewBit",
+    "description": "SQL Interview questions downloaded from InterviewBit",
+    "tags": ["Interview", "SQL"]
+  },
+  "b52": {
+    "slug": "jsInterviewBit",
+    "title": "jsInterviewBit",
+    "description": "JavaScript Interview questions downloaded from InterviewBit",
+    "tags": ["Interview", "JS"]
+  },
+  "b53": {
+    "slug": "sql_Interview",
+    "title": "sql Interview",
+    "description": "Basic questions for interview preparation",
+    "tags": ["Interview", "SQL"]
+  },
+  "b54": {
+    "slug": "TimeComplexityList",
+    "title": "Time Complexity List",
+    "description": "Most asked time complexity oneshots for interview preparation",
+    "tags": ["Interview", "SQL"]
+  }
 }
