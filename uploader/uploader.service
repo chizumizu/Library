@@ -1,0 +1,17 @@
+[Unit]
+Description=Books Library Uploader (FastAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/books_lib/uploader
+EnvironmentFile=/opt/books_lib/uploader/.env
+ExecStart=/opt/books_lib/uploader/.venv/bin/uvicorn app.main:app --host ${UPLOADER_HOST:-127.0.0.1} --port ${UPLOADER_PORT:-8000}
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
