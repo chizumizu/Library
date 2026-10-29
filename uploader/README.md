@@ -25,7 +25,7 @@ uploader/
     storage.py       # slug, save_pdf, register_book
     main.py          # FastAPI app, validation, 202 + script trigger
   scripts/upload-commit.sh
-  uploader.service   # systemd unit
+  uploader.service   # systemd --user unit
   requirements.txt
   .env.example
   error.txt          # push/commit failures (created on demand)
@@ -61,22 +61,43 @@ curl http://127.0.0.1:8000/health
 curl -F "titles=Hello World Book" -F "files=@sample.pdf" http://127.0.0.1:8000/upload
 ```
 
-## Production (systemd)
+## User-level systemd (no sudo)
 
+Run the uploader as your own login user with `systemd --user`. Nothing is written to `/etc`, `/opt`, or another user's home. The unit uses `%h` (your home directory) and assumes the checkout is at `~/Desktop/books_lib/library/uploader`; adjust the paths in `uploader.service` if yours differs.
+
+1. Create the virtualenv and env file:
 ```bash
-sudo mkdir -p /opt/books_lib && sudo cp -r uploader /opt/books_lib/
-sudo cp -r library /opt/books_lib/  # or git clone <library-remote> /opt/books_lib/library
-cd /opt/books_lib/uploader && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-sudo cp uploader.service /etc/systemd/system/uploader.service
-sudo systemctl daemon-reload
-sudo systemctl enable --now uploader
-sudo systemctl status uploader
-# logs
-journalctl -u uploader -f
-cat /opt/books_lib/uploader/error.txt
+cd ~/Desktop/books_lib/library/uploader
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+cp .env.example .env   # set UPLOADER_PORT / API_NINJAS_API_KEY
 ```
 
-Service file uses `EnvironmentFile=/opt/books_lib/uploader/.env` and `ExecStart=/opt/books_lib/uploader/.venv/bin/uvicorn app.main:app --host ${UPLOADER_HOST} --port ${UPLOADER_PORT}`. Update env then `sudo systemctl restart uploader`.
+2. Install and start the user unit:
+```bash
+mkdir -p ~/.config/systemd/user
+cp uploader.service ~/.config/systemd/user/uploader.service
+systemctl --user daemon-reload
+systemctl --user enable --now uploader
+systemctl --user status uploader
+```
+
+3. Enable lingering so it keeps running without an active login:
+```bash
+loginctl enable-linger "$USER"
+loginctl show-user "$USER" -p Linger   # should print Linger=yes
+```
+Linger starts your user manager at boot and keeps it after logout, so the service survives closing the terminal. If your distro's polkit policy rejects this for non-root users, an administrator must run the same command once.
+
+4. Logs and control:
+```bash
+journalctl --user -u uploader -f
+systemctl --user restart uploader
+systemctl --user disable --now uploader
+cat ~/Desktop/books_lib/library/uploader/error.txt
+```
+
+The unit runs with `WorkingDirectory=.../uploader`, so `UPLOADER_LIBRARY_DIR=../library` points at the sibling library checkout. `EnvironmentFile=.../.env` supplies `API_NINJAS_API_KEY` to `scripts/upload-commit.sh`. Because the service runs as you, `git push` uses your SSH key; verify non-interactive pushes with `ssh -T git@github.com` (or use a deploy key) before relying on uploads. Update `.env`, then `systemctl --user restart uploader`.
 
 ## API Errors
 

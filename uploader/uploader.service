@@ -4,14 +4,15 @@ After=network.target
 
 [Service]
 Type=simple
-User=www-data
-WorkingDirectory=/opt/books_lib/uploader
-EnvironmentFile=/opt/books_lib/uploader/.env
-ExecStart=/opt/books_lib/uploader/.venv/bin/uvicorn app.main:app --host ${UPLOADER_HOST:-127.0.0.1} --port ${UPLOADER_PORT:-8000}
+WorkingDirectory=%h/Desktop/books_lib/library/uploader
+Environment=UPLOADER_HOST=127.0.0.1
+Environment=UPLOADER_PORT=8000
+EnvironmentFile=%h/Desktop/books_lib/library/uploader/.env
+ExecStart=%h/Desktop/books_lib/library/uploader/.venv/bin/uvicorn app.main:app --host ${UPLOADER_HOST} --port ${UPLOADER_PORT}
 Restart=on-failure
 RestartSec=5
 NoNewPrivileges=true
 PrivateTmp=true
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
