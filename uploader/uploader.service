@@ -4,11 +4,11 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=%h/Desktop/books_lib/library/uploader
+WorkingDirectory=%h/library/uploader
 Environment=UPLOADER_HOST=127.0.0.1
 Environment=UPLOADER_PORT=8000
-EnvironmentFile=%h/Desktop/books_lib/library/uploader/.env
-ExecStart=%h/Desktop/books_lib/library/uploader/.venv/bin/uvicorn app.main:app --host ${UPLOADER_HOST} --port ${UPLOADER_PORT}
+EnvironmentFile=%h/library/uploader/.env
+ExecStart=%h/library/uploader/.venv/bin/uvicorn app.main:app --host ${UPLOADER_HOST} --port ${UPLOADER_PORT}
 Restart=on-failure
 RestartSec=5
 NoNewPrivileges=true

@@ -59,11 +59,11 @@ curl -F "titles=Hello World Book" -F "files=@sample.pdf" http://127.0.0.1:8000/u
 
 ## User-level systemd (no sudo)
 
-Run the uploader as your own login user with `systemd --user`. Nothing is written to `/etc`, `/opt`, or another user's home. The unit uses `%h` (your home directory) and assumes the checkout is at `~/Desktop/books_lib/library/uploader`; adjust the paths in `uploader.service` if yours differs.
+Run the uploader as your own login user with `systemd --user`. Nothing is written to `/etc`, `/opt`, or another user's home. The unit uses `%h` (your home directory) and assumes the library repo is at `~/library`, with the uploader at `~/library/uploader`. If your checkout is elsewhere, either symlink it to `~/library` or adjust the three `%h/...` paths in `uploader.service`.
 
 1. Create the virtualenv and env file:
 ```bash
-cd ~/Desktop/books_lib/library/uploader
+cd ~/library/uploader
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 cp .env.example .env   # set UPLOADER_PORT / API_NINJAS_API_KEY
@@ -90,10 +90,10 @@ Linger starts your user manager at boot and keeps it after logout, so the servic
 journalctl --user -u uploader -f
 systemctl --user restart uploader
 systemctl --user disable --now uploader
-cat ~/Desktop/books_lib/library/uploader/error.txt
+cat ~/library/uploader/error.txt
 ```
 
-The unit runs with `WorkingDirectory=.../uploader`, so `UPLOADER_LIBRARY_DIR=..` points at the library git root. `EnvironmentFile=.../.env` supplies `API_NINJAS_API_KEY` to `scripts/upload-commit.sh`. Because the service runs as you, `git push` uses your SSH key; verify non-interactive pushes with `ssh -T git@github.com` (or use a deploy key) before relying on uploads. Update `.env`, then `systemctl --user restart uploader`.
+The unit runs with `WorkingDirectory=%h/library/uploader`, so `UPLOADER_LIBRARY_DIR=..` points at `~/library`, the library git root. `EnvironmentFile=.../.env` supplies `API_NINJAS_API_KEY` to `scripts/upload-commit.sh`. Because the service runs as you, `git push` uses your SSH key; verify non-interactive pushes with `ssh -T git@github.com` (or use a deploy key) before relying on uploads. Update `.env`, then `systemctl --user restart uploader`.
 
 ## API Errors
 
