@@ -1,6 +1,6 @@
 # Books Library Uploader
 
-FastAPI service that accepts up to 5 PDFs per request, stores them in the sibling `../library` repository (`uploads/{slug}.pdf` + `meta_dt.json`), and commits/pushes to `main` via `scripts/upload-commit.sh`. Swagger at `/docs`.
+FastAPI service that accepts up to 5 PDFs per request, stores them in the parent library repository (`uploads/{slug}.pdf` + `meta_dt.json`), and commits/pushes to `main` via `scripts/upload-commit.sh`. The uploader lives inside the library repo, so the repo root is `..` from `uploader/`. Swagger at `/docs`.
 
 ## Features
 
@@ -19,23 +19,19 @@ curl -X POST http://127.0.0.1:8000/upload \
 ## Project Layout
 
 ```
-uploader/
-  app/
-    config.py        # Settings (UPLOADER_ prefix, .env), atomic JSON, read_meta
-    storage.py       # slug, save_pdf, register_book
-    main.py          # FastAPI app, validation, 202 + script trigger
-  scripts/upload-commit.sh
-  uploader.service   # systemd --user unit
-  requirements.txt
-  .env.example
-  error.txt          # push/commit failures (created on demand)
-```
-
-Library sibling (outside service repo):
-```
-../library/
+library/                 # git repository root (UPLOADER_LIBRARY_DIR=..)
+  uploader/
+    app/
+      config.py        # Settings (UPLOADER_ prefix, .env), atomic JSON, read_meta
+      storage.py       # slug, save_pdf, register_book
+      main.py          # FastAPI app, validation, 202 + script trigger
+    scripts/upload-commit.sh
+    uploader.service   # systemd --user unit
+    requirements.txt
+    .env.example
+    error.txt          # push/commit failures (created on demand)
   uploads/{slug}.pdf
-  meta_dt.json       # { slug: { slug, title, description, author, tag } }
+  meta_dt.json         # { slug: { slug, title, description, author, tag } }
 ```
 
 ## Environment
@@ -45,7 +41,7 @@ Library sibling (outside service repo):
 | `UPLOADER_HOST` | `127.0.0.1` | bind |
 | `UPLOADER_PORT` | `8000` | systemd reads `UPLOADER_PORT` |
 | `UPLOADER_MAX_PDF_BYTES` | `20971520` | 20 MiB |
-| `UPLOADER_LIBRARY_DIR` | `../library` | absolute or relative to `uploader/` |
+| `UPLOADER_LIBRARY_DIR` | `..` | absolute or relative to `uploader/`; must point at the library git root |
 | `API_NINJAS_API_KEY` | _(empty)_ | for joke commit message; fallback if missing/timeout |
 
 Copy `.env.example` → `.env` and set `API_NINJAS_API_KEY` for production commits.
@@ -97,7 +93,7 @@ systemctl --user disable --now uploader
 cat ~/Desktop/books_lib/library/uploader/error.txt
 ```
 
-The unit runs with `WorkingDirectory=.../uploader`, so `UPLOADER_LIBRARY_DIR=../library` points at the sibling library checkout. `EnvironmentFile=.../.env` supplies `API_NINJAS_API_KEY` to `scripts/upload-commit.sh`. Because the service runs as you, `git push` uses your SSH key; verify non-interactive pushes with `ssh -T git@github.com` (or use a deploy key) before relying on uploads. Update `.env`, then `systemctl --user restart uploader`.
+The unit runs with `WorkingDirectory=.../uploader`, so `UPLOADER_LIBRARY_DIR=..` points at the library git root. `EnvironmentFile=.../.env` supplies `API_NINJAS_API_KEY` to `scripts/upload-commit.sh`. Because the service runs as you, `git push` uses your SSH key; verify non-interactive pushes with `ssh -T git@github.com` (or use a deploy key) before relying on uploads. Update `.env`, then `systemctl --user restart uploader`.
 
 ## API Errors
 
@@ -111,6 +107,6 @@ Push failures never fail the upload response; details go to `error.txt`.
 
 - No secrets in repo; joke API key via `API_NINJAS_API_KEY` env only
 - Script never embeds keys, validates all paths, no `git config`, no branch switches, no force push
-- Verification done against ephemeral `mktemp` libraries; real `../library` not touched by tests
+- Verification done against ephemeral `mktemp` libraries; the real library checkout is not touched by tests
 
 Feedback: https://github.com/anomalyco/opencode

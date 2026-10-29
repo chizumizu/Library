@@ -4,8 +4,10 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+UPLOADER_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
@@ -16,7 +18,12 @@ class Settings(BaseSettings):
     host: str = "127.0.0.1"
     port: int = Field(default=8000, ge=1, le=65535)
     max_pdf_bytes: int = Field(default=20 * 1024 * 1024, gt=0)
-    library_dir: Path = Path(__file__).resolve().parent.parent.parent / "library"
+    library_dir: Path = UPLOADER_DIR.parent
+
+    @field_validator("library_dir")
+    @classmethod
+    def resolve_library_dir(cls, value: Path) -> Path:
+        return value if value.is_absolute() else (UPLOADER_DIR / value).resolve()
 
 
 settings = Settings()
