@@ -519,5 +519,12 @@
     "description": "resume",
     "author": "string",
     "tag": "book"
+  },
+  "test-string-rk": {
+    "slug": "test-string-rk",
+    "title": "test string rk",
+    "description": "string",
+    "author": "string",
+    "tag": "book"
   }
 }
