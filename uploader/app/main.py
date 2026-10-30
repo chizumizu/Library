@@ -17,8 +17,22 @@ from app.config import read_meta
 
 app = FastAPI(
     title="Books Library Uploader",
-    description="Upload up to 5 PDFs with metadata. Swagger is served at /docs.",
+    description="Upload up to 5 PDFs with metadata. Docs are served at /docs.",
     version="0.1.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    swagger_ui_parameters={
+        "defaultModelsExpandDepth": -1,
+        "defaultModelExpandDepth": -1,
+        "defaultModelRendering": "example",
+        "docExpansion": "list",
+        "displayRequestDuration": True,
+        "filter": True,
+        "tryItOutEnabled": True,
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "syntaxHighlight": {"theme": "obsidian"},
+    },
 )
 
 
@@ -31,6 +45,16 @@ def _restore_binary_format(schema: dict[str, Any]) -> None:
                 target["format"] = "binary"
 
 
+def _prioritize_upload_route(schema: dict[str, Any]) -> None:
+    paths = schema.get("paths", {})
+    if "/upload" not in paths:
+        return
+    schema["paths"] = {
+        "/upload": paths["/upload"],
+        **{path: item for path, item in paths.items() if path != "/upload"},
+    }
+
+
 def custom_openapi() -> dict[str, Any]:
     if app.openapi_schema:
         return app.openapi_schema
@@ -41,6 +65,7 @@ def custom_openapi() -> dict[str, Any]:
         routes=app.routes,
     )
     _restore_binary_format(schema)
+    _prioritize_upload_route(schema)
     app.openapi_schema = schema
     return app.openapi_schema
 

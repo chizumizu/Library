@@ -1,6 +1,6 @@
 # Books Library Uploader
 
-FastAPI service that accepts up to 5 PDFs per request, stores them in the library repository (`uploads/{slug}.pdf` + `meta_dt.json`), and commits/pushes to `main` via `scripts/upload-commit.sh`. The uploader source lives inside the library repo, but the running copy is deployed separately at `~/uploader`, pointing at the library checkout at `~/library`. Swagger at `/docs`.
+FastAPI service that accepts up to 5 PDFs per request, stores them in the library repository (`uploads/{slug}.pdf` + `meta_dt.json`), and commits/pushes to `main` via `scripts/upload-commit.sh`. The uploader source lives inside the library repo, but the running copy is deployed separately at `~/uploader`, pointing at the library checkout at `~/library`. Swagger UI at `/docs` (with file picker and Execute button), ReDoc at `/redoc`.
 
 ## Features
 
