@@ -5,9 +5,10 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile, status
+from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 
 from app.config import settings
@@ -19,6 +20,32 @@ app = FastAPI(
     description="Upload up to 5 PDFs with metadata. Swagger is served at /docs.",
     version="0.1.0",
 )
+
+
+def _restore_binary_format(schema: dict[str, Any]) -> None:
+    for component in schema.get("components", {}).get("schemas", {}).values():
+        for prop in component.get("properties", {}).values():
+            target = prop.get("items") if prop.get("type") == "array" else prop
+            if isinstance(target, dict) and target.get("contentMediaType") == "application/octet-stream":
+                target.pop("contentMediaType", None)
+                target["format"] = "binary"
+
+
+def custom_openapi() -> dict[str, Any]:
+    if app.openapi_schema:
+        return app.openapi_schema
+    schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+    )
+    _restore_binary_format(schema)
+    app.openapi_schema = schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
 
 _upload_lock = asyncio.Lock()
 PDF_MAGIC = b"%PDF"

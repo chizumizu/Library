@@ -109,6 +109,12 @@ Make sure the `slug` matches the PDF filename without `.pdf`. That’s all — i
 
 ---
 
+### Deploy the uploader
+
+The uploader is a separate FastAPI service that accepts PDFs and commits them to this repo. Clone this repo into your home directory, then copy the uploader out of the repo and deploy it at `~/uploader` (the library stays at `~/library`). See [uploader/README.md](uploader/README.md) for the exact steps.
+
+---
+
 ### Visit
 
 **https://books.chizumizu.space/** — open it, try the search, grab what you need.
