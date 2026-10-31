@@ -1,154 +1,110 @@
 # Books Library Uploader
 
-FastAPI service that accepts up to 5 PDFs per request, stores them in the library repository (`uploads/{slug}.pdf` + `meta_dt.json`), and commits/pushes to `main` via `scripts/upload-commit.sh`. The uploader source lives inside the library repo, but the running copy is deployed separately at `~/uploader`, pointing at the library checkout at `~/library`. Swagger UI at `/docs` (with file picker and Execute button), ReDoc at `/redoc`.
+FastAPI service for adding PDFs to the GitHub-backed library. The repository is the permanent archive; the OCI checkout is a working copy that can be compacted without checking out historical PDFs.
 
-## Features
+## Behavior and limits
 
-- `GET /` and `GET /health` — root and health check
-- `POST /upload` `202 Accepted` — multipart batch upload (1–5 files). Each file requires `titles` (≥2 words); optional `descriptions`, `authors` (parallel arrays). Validates PDF magic `%PDF`, `.pdf` extension, size limit (`UPLOADER_MAX_PDF_BYTES`, default 20 MiB), slug uniqueness (`python-slugify` + random suffix), atomic `meta_dt.json` writes, per-request `asyncio.Lock`.
-- Git commit script `scripts/upload-commit.sh <library-dir> <error-log> uploads/<slug>.pdf ...` — joke-based commit message (`https://api.api-ninjas.com/v1/jokes` + `API_NINJAS_API_KEY`, fallback `"I wont give up"` + timestamp), strict path validation (`uploads/[a-z0-9._-]+\.pdf`, no `..`), branch `main` only, refuses unrelated staged changes, `GIT_TERMINAL_PROMPT=0` + `GIT_SSH_COMMAND` batch mode, timeout 60 s from the API, failures appended to `error.txt`.
+- `GET /` and `GET /health` are health endpoints.
+- `POST /upload` accepts 1–5 PDFs with one title per file. Titles must contain at least two whitespace-separated words. Descriptions and authors are optional parallel lists.
+- Defaults are 20 MiB per PDF, 100 MiB aggregate PDF payload, and a 102 MiB maximum multipart request (including 2 MiB for form fields and multipart framing).
+- The endpoint copies each upload in 256 KiB chunks, validates the `.pdf` extension, non-empty content, and `%PDF` signature, and never overwrites a file already on disk.
+- A shared `flock` file serializes upload, publication, retry, and cleanup operations. If busy, the API returns `409` with `Retry-After: 15`.
+- Publishing is synchronous. The API returns `200` only after the configured remote branch reports the commit. A publishing failure returns `503` and keeps the files and metadata for recovery.
+- `UPLOADER_TARGET_BRANCH` defaults to `main`. Production should use `main`; use another value only for isolated development against a matching test remote.
+- At 300 MiB, a successful publish triggers best-effort checkout compaction. Uploads are rejected with `507` once the checkout has reached the 1 GiB ceiling or the conservative projected footprint would exceed it.
 
-Payload example (curl):
-```bash
-curl -X POST http://127.0.0.1:8000/upload \
-  -F "titles=My Great Book" -F "titles=Second Book Title" \
-  -F "files=@book1.pdf" -F "files=@book2.pdf" \
-  -F "descriptions=optional" -F "authors=Optional Author"
-```
+The ASGI middleware rejects oversized request bodies before handing excess bytes to Starlette's multipart parser, including requests without `Content-Length`. The route caps multipart parsing at five files and 15 text fields (title, description, and author per file), with each text part limited to 2 MiB. For the tested Starlette 1.10.0, file parts use `SpooledTemporaryFile` with a 1 MiB in-memory rollover threshold; the 102 MiB total body cap limits the file data that can be spooled before endpoint validation. The reverse proxy or ASGI server may already have buffered a larger receive chunk before application code sees it. Tests used FastAPI 0.162.0 and python-multipart 0.0.32 as well. Production requirements remain minimum-version ranges, so record the resolved versions when deploying.
 
-## Deployment Model
+The 1 GiB check measures regular file sizes in the configured library checkout, including `.git`. Multipart temporary files live outside that checkout. During compaction, the old checkout, the small candidate clone, and up to 102 MiB of multipart spool can coexist; reserve that extra headroom on the filesystem.
 
-- `~/library` — the cloned library git repository (tracked by git).
-- `~/uploader` — a **copy** of `~/library/uploader`, run separately by systemd. This directory is outside the repo and is not tracked by git.
-- Uploads are written to `~/library/uploads/` and committed from `~/library`.
+## Configuration
 
-The uploader source in this repo is only a template. Do not run it from inside the repo and do not commit the deployed copy, its `.env`, `.venv`, or `error.txt`.
+All settings use the `UPLOADER_` prefix and are listed in `.env.example`.
 
-## Project Layout
+| Setting | Default | Meaning |
+| --- | ---: | --- |
+| `HOST` | `127.0.0.1` | Uvicorn bind host |
+| `PORT` | `8000` | Uvicorn port |
+| `MAX_PDF_BYTES` | `20971520` | Per-file limit (20 MiB) |
+| `MAX_BATCH_BYTES` | `104857600` | Aggregate PDF payload limit (100 MiB) |
+| `MAX_MULTIPART_OVERHEAD_BYTES` | `2097152` | Extra request-body allowance (2 MiB) |
+| `MAX_FILES` | `5` | Maximum files per request |
+| `MAX_WORKSPACE_BYTES` | `1073741824` | Checkout ceiling (1 GiB) |
+| `WORKSPACE_RESERVE_BYTES` | `8388608` | Space reserved for metadata and Git overhead (8 MiB) |
+| `CLEANUP_THRESHOLD_BYTES` | `314572800` | Post-publish cleanup trigger (300 MiB) |
+| `LIBRARY_DIR` | parent checkout | Git working checkout |
+| `REMOTE_URL` | `git@github.com:chizumizu/Library.git` | required `origin` remote |
+| `TARGET_BRANCH` | `main` | Branch to publish |
+| `LOCK_FILE` | sibling `.library-uploader.lock` | Shared lock outside replaceable checkout |
 
-```
-library/                 # cloned repo at ~/library (git root)
-  uploader/              # source template only
-    app/
-      config.py        # Settings (UPLOADER_ prefix, .env), atomic JSON, read_meta
-      storage.py       # slug, save_pdf, register_book
-      main.py          # FastAPI app, validation, 202 + script trigger
-    scripts/upload-commit.sh
-    uploader.service   # systemd --user unit
-    requirements.txt
-    .env.example
-  uploads/{slug}.pdf
-  meta_dt.json         # { slug: { slug, title, description, author, tag } }
+The workspace preflight reserves 8 MiB for metadata and Git overhead, plus approximately twice the incoming PDF bytes for working files and new Git blobs. Git object compression and filesystem allocation can vary.
 
-uploader/                # deployed copy at ~/uploader (not tracked)
-  app/
-  scripts/
-  .venv/
-  .env                 # copied from .env.example
-  error.txt            # push/commit failures (created on demand)
-```
+## Local development and tests
 
-## Environment
+From `uploader/`:
 
-| Var | Default | Notes |
-|-----|---------|-------|
-| `UPLOADER_HOST` | `127.0.0.1` | bind |
-| `UPLOADER_PORT` | `8000` | systemd reads `UPLOADER_PORT` |
-| `UPLOADER_MAX_PDF_BYTES` | `20971520` | 20 MiB |
-| `UPLOADER_LIBRARY_DIR` | `../library` | relative to `~/uploader`, i.e. `~/library`; use an absolute path if the repo is cloned elsewhere |
-| `API_NINJAS_API_KEY` | _(empty)_ | for joke commit message; fallback if missing/timeout |
-
-## Deploy the Uploader
-
-Follow these steps exactly. They assume the library repo is cloned at `~/library` and the running uploader will live at `~/uploader`.
-
-1. Clone the library repo into your home directory (required to get the uploader source):
-```bash
-git clone <repo-url> ~/library
-```
-
-2. Copy the uploader source out of the repo, separate from it, and enter the deployed copy:
-```bash
-mkdir -p ~/uploader
-cp -r ~/library/uploader/app ~/library/uploader/scripts \
-      ~/library/uploader/requirements.txt ~/library/uploader/uploader.service \
-      ~/library/uploader/.env.example ~/uploader/
-cd ~/uploader
-```
-Only source files are copied, so any local `.env`, `.venv`, `error.txt`, or `__pycache__` inside the repo checkout is left behind.
-
-3. Create the virtualenv, install dependencies, and copy the env file with default values:
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-cp .env.example .env   # edit API_NINJAS_API_KEY / UPLOADER_PORT if needed
+.venv/bin/pip install -r requirements-dev.txt
+.venv/bin/python -m pytest
 ```
 
-4. Enable lingering **before** installing the service, so the user manager starts at boot and survives logout:
-```bash
-loginctl enable-linger "$USER"
-loginctl show-user "$USER" -p Linger   # should print Linger=yes
-```
-If your distro's polkit policy rejects this for non-root users, an administrator must run the same command once.
+The Git integration tests create temporary bare remotes and never access the configured GitHub remote. Do not point tests at a real checkout.
 
-5. Install and start the user unit from `~/uploader`:
-```bash
-mkdir -p ~/.config/systemd/user
-cp uploader.service ~/.config/systemd/user/uploader.service
-systemctl --user daemon-reload
-systemctl --user enable --now uploader
-systemctl --user status uploader
-```
+## Failed publish recovery
 
-6. Logs and control:
-```bash
-journalctl --user -u uploader -f
-systemctl --user restart uploader
-systemctl --user disable --now uploader
-cat ~/uploader/error.txt
-```
-
-The unit runs with `WorkingDirectory=%h/uploader`, so `UPLOADER_LIBRARY_DIR=../library` points at `~/library`, the library git root. `EnvironmentFile=%h/uploader/.env` supplies `API_NINJAS_API_KEY` to `scripts/upload-commit.sh`. Because the service runs as you, `git push` uses your SSH key; verify non-interactive pushes with `ssh -T git@github.com` (or use a deploy key) before relying on uploads. Update `.env`, then `systemctl --user restart uploader`.
-
-If the library repo is cloned somewhere other than `~/library` or the uploader is copied somewhere other than `~/uploader`, adjust `WorkingDirectory`, `EnvironmentFile`, `ExecStart`, and `UPLOADER_LIBRARY_DIR` accordingly.
-
-### Updating the deployed uploader
-
-The deployed copy does not update itself. After pulling changes in `~/library`, re-copy the source and restart:
+The API preserves the upload files and metadata when publishing fails. Inspect the library checkout and `error.txt` (in the deployed uploader directory). If the upload commit exists locally and the checkout is clean, retry it with:
 
 ```bash
-cp -r ~/library/uploader/app ~/library/uploader/scripts \
-      ~/library/uploader/requirements.txt ~/library/uploader/uploader.service \
-      ~/library/uploader/.env.example ~/uploader/
-cd ~/uploader && .venv/bin/pip install -r requirements.txt
-systemctl --user restart uploader
+UPLOADER_TARGET_BRANCH=main bash ~/uploader/scripts/retry-publish.sh ~/library
 ```
-This copy keeps the existing `~/uploader/.env` (it is never overwritten).
 
-## Local Run (without systemd)
+The retry command uses the shared lock, fetches the configured branch, rebases without force-pushing, and pushes. If there are uncommitted changes or a rebase conflict, stop and resolve the state while preserving the files. Cleanup refuses dirty or unpublished work.
 
-From the deployed copy:
+## Delete books
+
+`scripts/delete-books.py` removes one or more slugs from `meta_dt.json` and deletes the corresponding tracked PDFs in one commit. It supports both a full checkout and the compact sparse checkout. It uses the same lock as uploads and cleanup, requires a clean checkout at the configured remote branch, and refuses stale or unpublished local state.
+
+Preview the selected records, then run the deletion interactively:
 
 ```bash
 cd ~/uploader
-.venv/bin/uvicorn app.main:app --host ${UPLOADER_HOST:-127.0.0.1} --port ${UPLOADER_PORT:-8000} --reload
-# verify
-curl http://127.0.0.1:8000/health
-curl -F "titles=Hello World Book" -F "files=@sample.pdf" http://127.0.0.1:8000/upload
+.venv/bin/python scripts/delete-books.py --dry-run slug-one slug-two
+.venv/bin/python scripts/delete-books.py slug-one slug-two
 ```
 
-## API Errors
+The second command lists the titles and asks for confirmation. Add `--yes` only when invoking it non-interactively and after reviewing the slugs. If the push fails, the local deletion commit is retained; retry it with `retry-publish.sh` as described above. The script removes books from the current branch; it does not rewrite Git history or erase old blobs from previous commits.
 
-- `400` empty/short title, titles/files count mismatch, non-PDF, bad extension
-- `413` file too large
-- `500` malformed `meta_dt.json`
+## Workspace cleanup
 
-Push failures never fail the upload response; details go to `error.txt`.
+Dry-run and manual cleanup use the same lock and safety checks as uploads:
 
-## Security Notes
+```bash
+cd ~/uploader
+.venv/bin/python scripts/cleanup-workspace.py --dry-run
+.venv/bin/python scripts/cleanup-workspace.py
+du -sh ~/library
+```
 
-- No secrets in repo; joke API key via `API_NINJAS_API_KEY` env only
-- Script never embeds keys, validates all paths, no `git config`, no branch switches, no force push
-- Verification done against ephemeral `mktemp` libraries; the real library checkout is not touched by tests
+Cleanup refuses a wrong branch or remote, modified/staged/untracked/ignored files, unpublished commits, unresolved Git operations, an unavailable remote, or a busy lock. It clones a depth-one `blob:none` sparse checkout containing `meta_dt.json`, verifies that historical PDF blobs were not downloaded, then swaps it into place with rollback. The old checkout is removed only after post-swap validation.
 
-Feedback: https://github.com/anomalyco/opencode
+Install daily cleanup only after local testing and user review. The supplied user service and timer target `/home/ubuntu`; the timer runs at 21:00 UTC, which is 02:30 IST the next day. Copy both unit files to `~/.config/systemd/user/`. Ensure the `ubuntu` user manager runs while logged out (`loginctl enable-linger ubuntu`), review the paths and environment, then run:
+
+```bash
+systemctl --user daemon-reload
+systemctl --user enable --now uploader-cleanup.timer
+systemctl --user list-timers uploader-cleanup.timer
+```
+
+Disable with `systemctl --user disable --now uploader-cleanup.timer`. The cleanup service has explicit checkout, branch, and lock settings and does not load the uploader's secret environment file.
+
+The 300 MiB threshold is checked after successful uploads and by the daily timer. If post-publish cleanup fails, the publication remains successful; uploads are blocked when the 1 GiB checkout ceiling prevents another safe write. Cleanup does not delete unpublished files or commits.
+
+## Existing deployment layout
+
+- `~/library` is the persistent Git checkout.
+- `~/uploader` is the deployed application copy, separate from that checkout.
+- `uploader.service` is the existing systemd user-service template.
+- `uploader-cleanup.service` and `uploader-cleanup.timer` are templates only; they are not installed or enabled by this repository change.
+
+No OCI deployment is performed as part of local development. Preserve the current `.env`, virtual environment, SSH setup, and service configuration when updating the deployed copy. Never copy or commit the real `.env`.

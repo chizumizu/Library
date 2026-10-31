@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily compaction of the Books Library uploader checkout
+
+[Timer]
+OnCalendar=*-*-* 21:00:00 UTC
+Persistent=true
+RandomizedDelaySec=0
+Unit=uploader-cleanup.service
+
+[Install]
+WantedBy=timers.target

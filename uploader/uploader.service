@@ -7,6 +7,7 @@ Type=simple
 WorkingDirectory=%h/uploader
 Environment=UPLOADER_HOST=127.0.0.1
 Environment=UPLOADER_PORT=8000
+Environment=UPLOADER_TARGET_BRANCH=main
 EnvironmentFile=%h/uploader/.env
 ExecStart=%h/uploader/.venv/bin/uvicorn app.main:app --host ${UPLOADER_HOST} --port ${UPLOADER_PORT}
 Restart=on-failure

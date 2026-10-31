@@ -1,10 +1,11 @@
+import os
 import secrets
 from pathlib import Path
 from typing import Any
 
 from slugify import slugify
 
-from app.config import atomic_write_json, read_meta, settings
+from app.config import atomic_write_json
 
 SLUG_SEPARATOR = "-"
 SUFFIX_LENGTH = 4
@@ -21,24 +22,23 @@ def build_slug(title: str, meta: dict[str, Any]) -> str:
             return candidate
 
 
-def save_pdf(slug: str, content: bytes) -> Path:
-    uploads = settings.library_dir / "uploads"
-    uploads.mkdir(parents=True, exist_ok=True)
-    target = uploads / f"{slug}.pdf"
-    target.write_bytes(content)
-    return target
+def finalize_pdf(staged: Path, target: Path) -> None:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    # A hard link is atomic and fails if the destination already exists.
+    os.link(staged, target)
 
 
-def register_book(
-    slug: str, title: str, description: str | None, author: str | None
+def write_batch_metadata(
+    meta_path: Path,
+    meta: dict[str, Any],
+    entries: list[tuple[str, str, str | None, str | None]],
 ) -> None:
-    meta_path = settings.library_dir / "meta_dt.json"
-    meta = read_meta(meta_path)
-    meta[slug] = {
-        "slug": slug,
-        "title": title,
-        "description": description or "",
-        "author": author or "",
-        "tag": "book",
-    }
+    for slug, title, description, author in entries:
+        meta[slug] = {
+            "slug": slug,
+            "title": title,
+            "description": description or "",
+            "author": author or "",
+            "tag": "book",
+        }
     atomic_write_json(meta_path, meta)

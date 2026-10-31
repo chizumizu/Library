@@ -1,0 +1,16 @@
+[Unit]
+Description=Compact the Books Library uploader checkout
+After=network.target
+
+[Service]
+Type=oneshot
+Environment=HOME=/home/ubuntu
+Environment=UPLOADER_LIBRARY_DIR=/home/ubuntu/library
+Environment=UPLOADER_REMOTE_URL=git@github.com:chizumizu/Library.git
+Environment=UPLOADER_TARGET_BRANCH=main
+Environment=UPLOADER_LOCK_FILE=/home/ubuntu/.library-uploader.lock
+WorkingDirectory=/home/ubuntu/uploader
+ExecStart=/home/ubuntu/uploader/.venv/bin/python /home/ubuntu/uploader/scripts/cleanup-workspace.py
+TimeoutStartSec=30min
+NoNewPrivileges=true
+PrivateTmp=true
