@@ -88,7 +88,7 @@ du -sh ~/library
 
 Cleanup refuses a wrong branch or remote, modified/staged/untracked/ignored files, unpublished commits, unresolved Git operations, an unavailable remote, or a busy lock. It clones a depth-one `blob:none` sparse checkout containing `meta_dt.json`, verifies that historical PDF blobs were not downloaded, then swaps it into place with rollback. The old checkout is removed only after post-swap validation.
 
-Install daily cleanup only after local testing and user review. The supplied user service and timer target `/home/ubuntu`; the timer runs at 21:00 UTC, which is 02:30 IST the next day. Copy both unit files to `~/.config/systemd/user/`. Ensure the `ubuntu` user manager runs while logged out (`loginctl enable-linger ubuntu`), review the paths and environment, then run:
+Install daily cleanup only after local testing and user review. The supplied user service and timer target `/home/ubuntu`; the timer runs at 21:00 UTC, which is 02:30 IST the next day. The service passes `--if-over-threshold`, so scheduled cleanup runs only when the checkout reaches the configured 300 MiB threshold. Copy both unit files to `~/.config/systemd/user/`. Ensure the `ubuntu` user manager runs while logged out (`loginctl enable-linger ubuntu`), review the paths and environment, then run:
 
 ```bash
 systemctl --user daemon-reload

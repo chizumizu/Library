@@ -10,7 +10,7 @@ Environment=UPLOADER_REMOTE_URL=git@github.com:chizumizu/Library.git
 Environment=UPLOADER_TARGET_BRANCH=main
 Environment=UPLOADER_LOCK_FILE=/home/ubuntu/.library-uploader.lock
 WorkingDirectory=/home/ubuntu/uploader
-ExecStart=/home/ubuntu/uploader/.venv/bin/python /home/ubuntu/uploader/scripts/cleanup-workspace.py
+ExecStart=/home/ubuntu/uploader/.venv/bin/python /home/ubuntu/uploader/scripts/cleanup-workspace.py --if-over-threshold
 TimeoutStartSec=30min
 NoNewPrivileges=true
 PrivateTmp=true
